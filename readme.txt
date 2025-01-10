@@ -1,59 +1,26 @@
-Общий градле-проект
-https://www.book2s.com/tutorials/gradle-dependency-management.html
-
-SpringCloudGateway
-Гейтей связывающий AuthService и экземпляры WebApplication
-https://tproger.ru/articles/pishem-java-veb-prilozhenie-na-sovremennom-steke-s-nulja-do-mikroservisnoj-arhitektury-chast-3
-https://sysout.ru/spring-cloud-api-gateway/?ysclid=m5ergtfz7887528745
-https://www.concretepage.com/spring-boot/spring-cloud-gateway
-https://cloud.spring.io/spring-cloud-gateway/reference/html/
-    + actuator
-        https://www.concretepage.com/spring-boot/spring-boot-actuator-endpoints
-        https://www.book2s.com/tutorials/spring-boot-actuator.html
-        https://habr.com/ru/companies/otus/articles/650871/
-
-AuthService (OAuth)
-Сервер авторизации.
-Client Credentials Flow - Этот поток полезен для систем, которые должны выполнять операции API, когда пользователя нет. Например, ночные операции или другие, которые предполагают обращение к защищенным API OAuth
-    https://tproger.ru/articles/pishem-java-veb-prilozhenie-na-sovremennom-steke-s-nulja-do-mikroservisnoj-arhitektury-chast-2
-https://jwt.io/
-OAuth2
-    https://struchkov.dev/blog/ru/jwt-implementation-in-spring/
-    https://habr.com/ru/articles/784508/
-
-WebApplication
-Пример приложения работающего с БД и предоставляющего REST API + swagger.
-Добавлены разные мелкие красивости вроде примера перехватчика запросов/ответов или общего обработчика исключений, а также пример настраиваемого мягкого/жёсткого удаления
-Добавлена возможность работы через авторизацию посредством AuthService
-https://struchkov.dev/blog/ru/api-swagger/
-https://tproger.ru/articles/pishem-java-veb-prilozhenie-na-sovremennom-steke-s-nulja-do-mikroservisnoj-arhitektury-chast-1
-https://tproger.ru/articles/pishem-java-veb-prilozhenie-na-sovremennom-steke-s-nulja-do-mikroservisnoj-arhitektury-chast-2
+Исходники для статьи https://habr.com/ru/articles/872776/
 
 
-WebSecurityApplication
-//https://habr.com/ru/articles/482552/
-//https://habr.com/ru/articles/784508/
-Немного информации о Spring Security
-Самым фундаментальным объектом является SecurityContextHolder. В нем хранится информация о текущем контексте безопасности приложения, который включает в себя подробную информацию о пользователе (принципале), работающим с приложением.
-Spring Security использует объект Authentication, пользователя авторизованной сессии.
-«Пользователь» – это просто Object. В большинстве случаев он может быть
-приведен к классу UserDetails. UserDetails можно представить, как адаптер между БД пользователей и тем что требуется Spring Security внутри SecurityContextHolder.
-Для создания UserDetails используется интерфейс UserDetailsService, с единственным методом:
-UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
+У нас был spring и hibernate
+Мы твёрдо знали, что OAuth2.0 это хорошо, а принцип "Api first" ещё лучше.
+И нам дали ровно 48-ь часов чтобы создать работающую инфраструктуру с возможностями авторизации, отслеживания метрик, динамической маршрутизацией запросов и раздачей конфигураций сервисам "на лету". Кроме того от нас хотели получить "best practics" по работе с БД в коде и лёгкой поддержке ролевой модели.
+Мы справились.
+Это оказалось даже легче чем можно было подумать сначала.
 
-WebGenerateApplication
-Пример автогенерации веб-сервисов из ямл-файлов
-https://habr.com/ru/companies/spring_aio/articles/833096/
-https://openvalue.blog/posts/2023/11/26/communicating_our_apis_part2/
-https://openapi-generator.tech/docs/generators/#server-generators
 
-SpringCloudConfig
-Конфиг сервер - раздаёт конфиги другим приложениям по запросу храня их либо локально, либо в гит-е
-https://sysout.ru/spring-cloud-configuration-server/
-https://www.czetsuyatech.com/2019/10/spring-config-using-git.html
-https://docs.spring.io/spring-cloud-config/docs/current/reference/html/
-https://www.baeldung.com/spring-cloud-config-without-git
 
-SpringBootAdminServer
-Сприг-бут-админ-сервер
-https://habr.com/ru/articles/479954/
+В рамках данного репозитория созданы и увязаны в единую инрфаструктуру следующие проекты:
+
+1. Сервис авторизации (AuthService) который будет по протоколу oauth 2.0 выдавать доступы к нашим приложениям.
+
+2. Сервис конфигурации (SpringCloudConfig) который будет раздавать настройки всем нашим приложениям которым требуются настройки. Также он даст нам возможность обновлять настройки приложения без необходимости перезапускать само приложение и/или данный сервер конфигурации.
+
+3. Гейтвей (SpringCloudGateway) который отвечает за пробрасывание запросов из условно не безопасной зоны в условно безопасную зону где расположены все остальные сервисы.
+
+4. Сервис мониторинга (SpringBootAdminServer) предоставляющий простую систему мониторинга множества работающих сервисов.
+
+5. Сервис-приложение 1 (WebApplication) представляющий собой обычный веб-сервис с доступом к БД и ручной авторизаций через сервер-авторизации.
+
+6. Сервис-приложение 2 (WebSecurityApplication) представляющий собой обычный веб-сервис с авторизацией частично использующей механизмы spring security
+
+7. Сервис-приложение 3 (WebGenerateApplication) не требующий авторизации, но зато демонстрирующий использование популярного при разработке принципа "api first" и автогенерации кода.
