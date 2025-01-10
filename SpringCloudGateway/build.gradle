@@ -1,0 +1,17 @@
+
+group = 'ru.gateway'
+version = '1.0-SNAPSHOT'
+
+dependencies {
+    //spring
+    implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    //swagger(webflux) for gateway
+    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.6.0' //https://www.baeldung.com/spring-cloud-gateway-integrate-openapi
+}
+
+
+test {
+    useJUnitPlatform()
+}

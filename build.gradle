@@ -1,0 +1,102 @@
+//https://www.book2s.com/tutorials/gradle-multi-project.html
+//отчёт о зависимостях ./gradlew dependencyInsight --dependency org.example:library
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.1'
+    id 'io.spring.dependency-management' version '1.1.5'
+    id 'org.openapi.generator' version '7.10.0'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+subprojects {
+    // Apply common configurations or tasks to all subprojects
+
+    //apply plugins
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    //repositories
+    repositories {
+        mavenCentral()
+        flatDir {
+            dirs 'libs'
+        }
+    }
+
+    //dependencies
+    dependencies {
+        implementation 'javax.annotation:javax.annotation-api:1.3.2' //for PostConstruct and other annotation
+
+        //work with jwt token
+        implementation 'com.auth0:java-jwt:3.18.2'
+
+        //spring actuator.   https://www.concretepage.com/spring-boot/spring-boot-actuator-endpoints, https://www.book2s.com/tutorials/spring-boot-actuator.html
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+        //spring admin client
+        implementation 'de.codecentric:spring-boot-admin-starter-client:3.1.5'
+
+        //swagger
+        implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0' //https://www.baeldung.com/spring-rest-openapi-documentation
+
+        //spring cloud config
+        implementation 'org.springframework.cloud:spring-cloud-starter-config'
+        implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+
+        //lombok
+        compileOnly 'org.projectlombok:lombok:1.18.30'
+        annotationProcessor 'org.projectlombok:lombok:1.18.30'
+        testCompileOnly 'org.projectlombok:lombok'
+        testAnnotationProcessor 'org.projectlombok:lombok'
+    }
+
+    ext {
+        set('springCloudVersion', "2023.0.1")
+    }
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+}
+
+/*sourceSets {
+    main {
+        java {
+            srcDirs 'wizard'
+            //srcDirs 'src1'
+            //srcDirs 'src2'
+        }
+    }
+    test{
+        java {
+            srcDir 'wizard-test/java'
+        }
+        resources{
+            srcDir 'wizard-test/resources'
+        }
+    }
+}*/
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}

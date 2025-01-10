@@ -1,0 +1,11 @@
+rootProject.name = 'SpringSimple'
+
+include 'SpringCloudGateway'  //gateway
+include 'AuthService'         //сервис аутентификации. Выдаёт jwt-токен для последующей brear-авторизации
+include 'SpringCloudConfig' //конфиг сервер
+include 'SpringBootAdminServer' //сервер спринг-бут-админа
+
+//applications
+include 'Apps:WebApplication'      //пример приложения
+include 'Apps:WebSecurityApplication' //пример приложения с идентиф на основе spring security
+include 'Apps:WebGenerateApplication' //пример приложения с автогенерацией веб-сервисов из ямл-файла (нет авторизации)

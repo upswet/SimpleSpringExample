@@ -1,0 +1,23 @@
+
+group = 'ru.app'
+version = '1.0-SNAPSHOT'
+
+dependencies {
+    //spring
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    //spring security
+    implementation 'org.springframework.boot:spring-boot-starter-security:3.4.1'
+
+    //implementation 'org.springframework.security:spring-security-core:6.4.2'
+    //implementation 'org.springframework.security:spring-security-config:6.4.2'
+    //implementation 'org.springframework.security:spring-security-web:6.4.2'
+
+    //swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0' //https://www.baeldung.com/spring-rest-openapi-documentation
+
+}
+
+
+test {
+    useJUnitPlatform()
+}

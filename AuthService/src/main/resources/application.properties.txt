@@ -1,0 +1,56 @@
+spring.application.name=AuthService
+auth.jwt.secret.access=super-secret-key-
+auth.jwt.secret.refresh=super-secret-key-
+
+#web
+server.port=8079
+# inout answer on ResponseStatusException
+server.error.include-message=always
+
+#swagger
+#http://localhost:8080/api-docs
+#http://localhost:8080/api-docs.yaml
+#http://localhost:8080/swagger-ui/index.html
+springdoc.api-docs.enabled=true
+springdoc.swagger-ui.enabled=true
+springdoc.swagger-ui.path=swagger-ui.html
+springdoc.api-docs.path=/api-docs
+
+
+#h2 db
+spring.datasource.url: jdbc:h2:~/MYDB1;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE;AUTO_SERVER=TRUE
+#spring.datasource.url: jdbc:h2:mem:MYDB;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE
+spring.datasource.driverClassName: org.h2.Driver
+spring.datasource.username: sa
+spring.datasource.password:
+spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+#http://localhost:8080/h2-console
+spring.h2.console.enabled=true
+
+# https://www.baeldung.com/spring-boot-data-sql-and-schema-sql (schema.sql ? data.sql) ??(never/always)
+spring.datasource.initialization-mode=never
+spring.jpa.defer-datasource-initialization = false
+spring.sql.init.mode = never
+#encoding data.sql
+spring.datasource.sql-script-encoding= UTF-8
+spring.sql.init.encoding = UTF-8
+
+# Without below HikariCP uses deprecated com.zaxxer.hikari.hibernate.HikariConnectionProvider
+# Surprisingly enough below ConnectionProvider is in hibernate-hikaricp dependency and not hibernate-core
+# So you need to pull that dependency but, make sure to exclude it transitive dependencies or you will end up
+# with different versions of hibernate-core
+spring.jpa.hibernate.connection.provider_class=org.hibernate.hikaricp.internal.HikariCPConnectionProvider
+## debug sql
+#spring.jpa.show-sql=true
+#spring.jpa.properties.hibernate.format_sql=true
+#logging.level.org.hibernate.SQL=DEBUG
+#logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE
+
+#turned on to enable lazy loading
+spring.jpa.properties.hibernate.enable_lazy_load_no_trans=true
+
+## Hibernate settings (update | none)
+spring.jpa.hibernate.ddl-auto=update
+
+
+

@@ -1,0 +1,25 @@
+spring.application.name=WebSecurityApplication1
+
+spring.security.user.name=u2
+spring.security.user.password=p2
+
+auth.jwt.secret.access=super-secret-key-
+
+#web
+server.port=8081
+# inout answer on ResponseStatusException
+server.error.include-message=always
+
+#swagger
+#http://localhost:8080/api-docs
+#http://localhost:8080/api-docs.yaml
+#http://localhost:8080/swagger-ui/index.html
+springdoc.api-docs.path=/api-docs
+
+#actuator
+#https://www.baeldung.com/spring-boot-actuators
+management.endpoint.shutdown.enabled=true
+management.endpoints.web.exposure.include=*
+management.endpoint.health.group.custom.include=diskSpace,ping
+management.endpoint.health.group.custom.show-components=always
+management.endpoint.health.group.custom.show-details=always

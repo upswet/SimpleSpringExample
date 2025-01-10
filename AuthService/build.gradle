@@ -1,0 +1,20 @@
+
+group = 'ru.auth'
+version = '1.0-SNAPSHOT'
+
+dependencies {
+    //spring
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    //db
+    runtimeOnly 'com.h2database:h2'
+    testImplementation 'com.h2database:h2:2.2.224'
+
+    //Bcrypt
+    implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
+}
+
+test {
+    useJUnitPlatform()
+}

@@ -1,0 +1,112 @@
+#web
+server:
+  port: 80
+
+management:
+  endpoint:
+    health:
+      show-details: always
+    info:
+      enabled: true
+    shutdown:
+      enabled: true    #запрос на выклю приложения curl -i -X POST http://localhost:80/actuator/shutdown
+    gateway:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: gateway, health, metrics, shutdown, info, myCustomEndpoint    #http://localhost/actuator/gateway/routes
+
+
+#http://localhost/webjars/swagger-ui/index.html?urls.primaryName=gateway-service
+springdoc:
+  enable-native-support: true
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui
+    urls:
+      #Gateway(this)
+      -   name: gateway-service
+          primaryName: API Gateway Service
+          url: /api-docs
+      #AuthService   http://localhost/webjars/swagger-ui/index.html?urls.primaryName=auth-service
+      -   name: auth-service
+          primaryName: API Auth Service
+          url: http://localhost:8079/api-docs
+      #WebApplication1  http://localhost/webjars/swagger-ui/index.html?urls.primaryName=web-app1-service
+      -   name: web-app1-service
+          primaryName: API Application 'WebApplication1'
+          url: http://localhost:8080/api-docs
+      #WebSecurityApplication  http://localhost/webjars/swagger-ui/index.html?urls.primaryName=web-sec-app-service
+      -   name: web-sec-app-service
+          primaryName: API Application 'WebSecurityApplication'
+          url: http://localhost:8081/api-docs
+      #WebGenerateApplication  http://localhost/webjars/swagger-ui/index.html?urls.primaryName=web-gen-app-service
+      -   name: web-gen-app-service
+          primaryName: API Application 'WebGenerateApplication'
+          url: http://localhost:8082/api-docs
+
+spring:
+  boot:
+    admin:
+      client:
+        url: http://localhost:8099
+  application:
+    name: Gateway
+  cloud:
+    gateway:
+      httpclient:
+        ssl:  #доверять всем сертификатам
+          useInsecureTrustManager: true
+      routes:
+#AuthService  - http://localhost:80/AuthService/login
+        - id: AuthService-registration
+          uri: http://localhost:8079
+          predicates:
+            - Path=/AuthService/**
+          filters:
+            - RewritePath=/AuthService, /auth
+
+#WebApplication1
+        #запрашивать как http://localhost:80/WebApplication1/web/hello?name=rrrrr
+        - id: WebApplication1-web
+          uri: http://localhost:8080   #урл сервиса куда перенаправляем запрос
+          predicates:     #условие по которому запрос перенаправляется
+            - Path=/WebApplication1/web/**
+          filters: #как модифицируется запрос на пути туда и обратно
+            - RewritePath=/WebApplication1/web, /app/v1
+
+        #запрашивать как http://localhost:80/WebApplication1/db/1
+        - id: WebApplication1-db
+          uri: http://localhost:8080
+          predicates:
+            - Path=/WebApplication1/db/**
+          filters:
+            - RewritePath=/WebApplication1/db, /app/db/worker
+
+#WebSecurityApplication   как http://localhost:80/WebSecurityApplication/web/hello1
+        - id: WebSecurityApplication-web
+          uri: http://localhost:8081
+          predicates:
+            - Path=/WebSecurityApplication/web/**
+          filters:
+            - RewritePath=/WebSecurityApplication/web, /app/v1
+
+#WebGenerateApplication
+        - id: WebGenerateApplication-pets
+          uri: http://localhost:8082
+          predicates:
+            - Path=/WebGenerateApplication/**
+          filters:
+            - RewritePath=/WebGenerateApplication, /
+
+#other
+        - id: help
+          uri: https://spring.io/guides
+          predicates:
+            - Path=/help
+          filters:
+            - RedirectTo=302, https://spring.io/guides

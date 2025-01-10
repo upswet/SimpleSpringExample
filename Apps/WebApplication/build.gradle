@@ -1,0 +1,33 @@
+
+group = 'ru.app'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    //spring
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+
+    //db
+    runtimeOnly 'com.h2database:h2'
+    //runtimeOnly 'org.postgresql:postgresql'
+    testImplementation 'com.h2database:h2:2.2.224'
+
+
+    /*gson, json and json simple
+    implementation 'com.googlecode.json-simple:json-simple:1.1'
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'org.apache.commons:commons-lang3:3.10'
+    implementation 'org.json:json:20240303'*/
+}
+
+test {
+    useJUnitPlatform()
+}

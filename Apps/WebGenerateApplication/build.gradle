@@ -1,0 +1,70 @@
+group = 'ru.app.gen'
+version = '0.0.1-SNAPSHOT'
+
+apply plugin: 'org.openapi.generator'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	//swagger
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+
+	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+	implementation 'javax.servlet:javax.servlet-api:3.0.1'
+	implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
+}
+
+
+tasks.named('compileJava') {
+	dependsOn(tasks.openApiGenerate)
+}
+
+
+//restclient
+/*
+openApiGenerate {
+	generatorName.set('java')
+	configOptions.set([
+		library: 'restclient',
+		openApiNullable: 'false'
+	])
+	inputSpec = "${projectDir}/src/main/resources/petclinic-spec.yml"
+	outputDir = "${projectDir}/build/generated/java-rest-client"
+	ignoreFileOverride.set(".openapi-generator-java-sources.ignore")
+	invokerPackage.set('com.myapp')
+	modelPackage.set('com.myapp.model')
+	apiPackage.set('com.myapp.api')
+}
+*/
+
+//web-server
+openApiGenerate {
+	generatorName = 'spring'
+	configOptions.set([
+			library: 'spring-boot',
+			openApiNullable: 'false',
+			generateSupportingFiles: 'false',
+			interfaceOnly: 'true',
+			useSpringBoot3: 'true'
+	])
+	inputSpec = "${projectDir}/src/main/resources/petclinic-spec.yml"
+	outputDir = "${projectDir}/build/generated/java-server"
+	apiPackage = "com.example.api"
+	modelPackage = "com.example.model"
+	//configOptions = [dateLibrary: "java8"]
+}
+
+sourceSets {
+	main {
+		java {
+			srcDirs("$buildDir/generated/java-server/src/main/java")  //server
+			srcDirs("$buildDir/generated/java-rest-client/src/main/java") //client
+		}
+	}
+}
